@@ -4,7 +4,7 @@
 # //
 # // File:      Scrape_Web_1903.ps1
 # // 
-# // Purpose:   Scrape Microsoft for Patch Numbers for build 18362
+# // Purpose: Scrape Microsoft for Patch Numbers for build 18362/18363 (1903/1909)
 # // 
 # // 
 # // ***************************************************************************
