@@ -1,14 +1,3 @@
-# // ***************************************************************************
-# // 
-# // ComputerInformation 
-# //
-# // File:      ComputerInformation.ps1
-# // 
-# // Purpose:   GUI to tell people IP address, patch level, VPN Status, etc
-# // 
-# // 
-# // ***************************************************************************
-
 # .Net methods for hiding/showing the console in the background
 Add-Type -Name Window -Namespace Console -MemberDefinition '
   [DllImport("Kernel32.dll")]
@@ -612,6 +601,17 @@ $CN4 = (GET-CName -DN $dn1).item(4)
 
 $OU1 = $cn1+" \ "+$cn2+" \ "+$CN3
 
+#determine if IPU or OSD
+if (((Get-ChildItem -Path  "HKLM:\SOFTWARE\WaaS").name.count) -ge '2')
+{
+  $BUILDTYPE ="IPU"
+}
+else
+{
+  $BUILDTYPE =  "OSD"
+} 
+#$BUILDTYPE
+
 #get Build Version
 $BUILDVER = Get-Content C:\BJ_W10_Version.txt
 $BJBUILDVER = $BUILDVER.split(".")[1]
@@ -630,10 +630,15 @@ function Get-RegistryValue($key, $value) {
 }
 $UBR = Get-RegistryValue "HKLM:\software\microsoft\windows nt\currentversion" UBR
 $WINVER = Get-RegistryValue "HKLM:\software\microsoft\windows nt\currentversion" ReleaseID
+$SCCMCLIENT = Get-RegistryValue "HKLM:\SOFTWARE\Microsoft\SMS\Mobile Client" SmsClientVersion
 
 If ($WINVER -ieq '1607'){
   $array = @'
 Date,UBR
+June 18-2019,3053
+June 11-2019,3025
+May 23-2019,2999
+May 19-2019,2972
 May 14-2019,2969
 April 25-2019,2941
 April 9-2019,2906
@@ -717,6 +722,14 @@ August 2-2016,10
 If ($WINVER -ieq '1709'){
   $array = @'
 Date,UBR
+November 12-2019,1508
+October 15-2019,1481
+October 8-2019,1451
+October 3-2019,1421
+September 24-2019,1420
+September 23-2019,1392
+September 10-2019,1387
+August 16-2019,1365
 August 13-2019,1331
 July 16-2019,1296 
 July 9-2019,1268
@@ -804,6 +817,14 @@ May 8-2018,48
 If ($WINVER -ieq '1809'){
   $array = @'
 Date,UBR
+November 12-2019,864
+October 15-2019,832
+October 8-2019,805
+October 3-2019,775
+September 24-2019,774
+September 23-2019,740
+September 10-2019,737
+August 17-2019,720
 August 13-2019,678
 July 22-2019,652
 July 9-2019,615
@@ -833,6 +854,11 @@ October 9-2018,55)
 
 $DatePatched = ((@($array) -match $UBR).date)
 
+#*****************************************************************************************
+#*****************************************************************************************
+$SCCMCLIENT_PROD = '5.00.8553.1020'
+#*****************************************************************************************
+#*****************************************************************************************
 
 [nullable[datetime]]$LastBootUpTime = (Get-Date -ErrorAction 'Stop') - ([timespan]::FromMilliseconds([math]::Abs([Environment]::TickCount))) 
  
@@ -923,10 +949,21 @@ $TextBlock15.FontWeight = "Bold"
 $TextBlock15.HorizontalAlignment = "Left" 
 
 $TextBlock16 = New-Object System.Windows.Controls.TextBlock
-$TextBlock16.Text = "  Bennett Jones Version:$BJBUILDVER NOT EQUAL to Microsoft Version:$WINVER!!!!"
-$TextBlock16.FontSize = "18"
+$TextBlock16.Text = "  Bennett Jones Version: $BJBUILDVER NOT EQUAL to Microsoft Version: $WINVER!!!!"
+$TextBlock16.FontSize = "19"
 $TextBlock16.FontWeight = "Bold"
 $TextBlock16.HorizontalAlignment = "Left" 
+
+$TextBlock17 = New-Object System.Windows.Controls.TextBlock
+$TextBlock17.Text = "  SCCM Client: $SCCMCLIENT NOT EQUAL to Production: $SCCMCLIENT_PROD"
+$TextBlock17.FontSize = "19"
+$TextBlock17.FontWeight = "Bold"
+$TextBlock17.HorizontalAlignment = "Left" 
+
+$TextBlock18 = New-Object System.Windows.Controls.TextBlock
+$TextBlock18.Text = "  Bennett Jones Build Type = $BUILDTYPE"
+$TextBlock18.FontSize = "18"
+$TextBlock18.HorizontalAlignment = "Left" 
 
 $Source = "c:\windows\bjsystems\powershell\BJ2.jpg"
 $Image = New-Object System.Windows.Controls.Image
@@ -951,20 +988,24 @@ $StackPanel.AddChild($TextBlock9)
 $StackPanel.AddChild($TextBlock4)
 $StackPanel.AddChild($TextBlock5)
 $StackPanel.AddChild($TextBlock11)
+IF ($SCCMCLIENT -lt $SCCMCLIENT_PROD)
+{$StackPanel.AddChild($TextBlock17)}
 $StackPanel.AddChild($TextBlock6)
 $StackPanel.AddChild($TextBlock2)
 $StackPanel.AddChild($TextBlock3)
 $StackPanel.AddChild($TextBlock10)
+$StackPanel.AddChild($TextBlock18)
 $StackPanel.AddChild($TextBlock7)
 $StackPanel.AddChild($TextBlock13)
 IF ($BJBUILDVER -ne $WINVER)
 {$StackPanel.AddChild($TextBlock16)}
+
 $StackPanel.AddChild($TextBlock8) 
   
 ## minimize all active windows
 (New-Object -ComObject Shell.application).MinimizeAll()
 
 ## launch Messagebox
-New-WPFMessageBox -Content $StackPanel -TitleFontSize '24' -Title "Computer Information (1.104) - Windows $BUILDVER" -TitleBackground SeaGreen -TitleTextForeground Black -ContentBackground White -TitleFontWeight Bold #-CornerRadius 160 -ShadowDepth 15 -BlurRadius 15 -BorderThickness 1 
+New-WPFMessageBox -Content $StackPanel -TitleFontSize '24' -Title "Computer Information (1.139) - Windows $BUILDVER" -TitleBackground SeaGreen -TitleTextForeground Black -ContentBackground White -TitleFontWeight Bold #-CornerRadius 160 -ShadowDepth 15 -BlurRadius 15 -BorderThickness 1 
 
 $BJBUILDVER = $BUILDVER.split(".")[1]
