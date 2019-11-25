@@ -1,3 +1,14 @@
+# // ***************************************************************************
+# // 
+# // ComputerInformation 
+# //
+# // File:      ComputerInformation.ps1
+# // 
+# // Purpose:   GUI to tell people IP address, patch level, VPN Status, etc
+# // 
+# // 
+# // ***************************************************************************
+
 # .Net methods for hiding/showing the console in the background
 Add-Type -Name Window -Namespace Console -MemberDefinition '
   [DllImport("Kernel32.dll")]
