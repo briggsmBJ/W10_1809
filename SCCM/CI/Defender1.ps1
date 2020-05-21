@@ -34,15 +34,10 @@ else
 ## Defender Endpoint Protectetion Engine Version is 1.1.17000.7 or greater (Check 5)
 $EngineVer = Get-Itemproperty 'HKLM:SOFTWARE\Microsoft\Windows Defender\Signature Updates'
 
-if ($EngineVer.EngineVersion -lt '1.1.17000.7')
+if ($EngineVer.EngineVersion -ge '1.1.17000.7')
 { $Enginegood = 0 }
 else
 { $Enginegood = 16 }
    
 ## If all 5 Checks pass, then set to $true
-$count = $AVCOUNT + $SVCCOUNT + $EXCLUEXIST + $antimalgood + $enginegood
-
-if($count -eq 0) 
-{ $true }
-else
-{ $false }
+($count = $AVCOUNT + $SVCCOUNT + $EXCLUEXIST + $antimalgood + $enginegood)
