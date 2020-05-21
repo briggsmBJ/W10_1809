@@ -39,5 +39,13 @@ if ($EngineVer.EngineVersion -ge '1.1.17000.7')
 else
 { $Enginegood = 16 }
    
-## If all 5 Checks pass, then set to $true
-($count = $AVCOUNT + $SVCCOUNT + $EXCLUEXIST + $antimalgood + $enginegood)
+## Defender Realtime Monitoring is Not Disable (Check 6)
+$Realtime = (Get-MpPreference).DisableRealTimeMonitoring
+
+if ($Realtime -eq $False)
+{ $RealtimeGood = 0 }
+else
+{ $Realtimegood = 32 }
+         
+## If all 6 Checks pass, then set to $true
+($count = $AVCOUNT + $SVCCOUNT + $EXCLUEXIST + $antimalgood + $enginegood + $Realtimegood)
