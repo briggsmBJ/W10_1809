@@ -74,9 +74,17 @@ Context "OS Version Check" {
 }
 }
 
-
-
-
+  ## Services we want to test for
+  $services = 'AppSense Application Manager Agent', 'CcmExec', 'iphlpsvc', 'masvc', 'ProxyHostService', 'PrinterInstallerLauncher', 'SentinelAgent', 'Windefend', 'bthserv', 'WinRM'
+ 
+  Context -Name 'Testing that the Service is running' -Fixture {
+  $services.ForEach{
+   It -name "The $($_) service should be running" -test {
+        (Get-Service -ServiceName $_ ).status | Should be 'Running'
+      }
+    }
+   }
+}
 
 
 ## Reset Progress Bars
