@@ -1,0 +1,13 @@
+$w = invoke-webrequest -uri "https://support.microsoft.com/en-us/topic/windows-10-update-history-53c270dc-954f-41f7-7ced-488578904dfe"
+
+#$w | Get-Member
+
+#$w.StatusCode
+#$w.AllElements.count
+
+$final = $w.AllElements | Where-Object -Property tagname -EQ -Value "A" | Select-Object -Property innertext
+
+$2 = $final | Select-Object -Property * | Where-Object innertext -match '17763' | Where-Object innertext -notmatch 'Preview' | Where-Object innertext -notmatch 'band' | ft -HideTableHeaders
+$final | Select-Object -Property * | Where-Object innertext -match '18363' | Where-Object innertext -notmatch 'Preview' | Where-Object innertext -notmatch 'band' | ft -HideTableHeaders
+$final | Select-Object -Property * | Where-Object innertext -match '19042' | Where-Object innertext -notmatch 'Preview' | Where-Object innertext -notmatch 'band' | ft -HideTableHeaders
+
